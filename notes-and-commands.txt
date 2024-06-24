@@ -1,0 +1,15 @@
+Manual Qouta check:
+curl -X GET "https://management.azure.com/subscriptions/<SUB-ID>/providers/Microsoft.Capacity/resourceProviders/Microsoft.Compute/locations/westeurope/serviceLimits?api-version=2020-10-25" -H "Authorization: Bearer $(az account get-access-token --query accessToken -o tsv)"
+
+Local docker commands:
+docker build -t solab-app .
+docker run -p 5000:5000 solab-app
+docker login
+docker tag solab-app granitfazliudev/solab-app
+docker push granitfazliudev/solab-app
+
+Manual terraform imports:
+terraform import azurerm_resource_group.solab_aks_rg /subscriptions/<SUB-ID>/resourceGroups/solabaksResourceGroup
+terraform import azurerm_storage_account.solaborate_sa /subscriptions/<SUB-ID>/resourceGroups/solabaksResourceGroup/providers/Microsoft.Storage/storageAccounts/solaboratestorageacc
+terraform import azurerm_storage_container.solaborate_container https://solaboratestorageacc.blob.core.windows.net/tfstate
+terraform import azurerm_kubernetes_cluster.aks_cluster /subscriptions/<SUB-ID>/resourceGroups/solabaksResourceGroup/providers/Microsoft.ContainerService/managedClusters/aksCluster
