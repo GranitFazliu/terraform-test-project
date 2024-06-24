@@ -1,0 +1,26 @@
+name: 'Deploy to AKS'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v2
+
+      - name: 'Azure Login'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Get AKS Credentials'
+        run: |
+          az aks get-credentials --resource-group solabaksResourceGroup --name aksCluster
+
+      - name: 'Deploy to AKS'
+        run: |
+          kubectl apply -f kubernetes/app-deployment.yaml
+          kubectl apply -f kubernetes/app-service.yaml

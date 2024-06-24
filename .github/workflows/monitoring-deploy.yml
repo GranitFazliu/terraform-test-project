@@ -1,0 +1,45 @@
+name: Deploy Monitoring Stack
+
+on:
+ workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Get AKS Credentials
+      run: az aks get-credentials --resource-group solabaksResourceGroup --name aksCluster
+
+    - name: Create Monitoring Namespace
+      run: |
+        kubectl get namespace monitoring || kubectl create namespace monitoring
+
+    - name: Apply Prometheus Deployment
+      run: kubectl apply -f monitoring/prometheus-deployment.yaml
+
+    - name: Apply Prometheus role
+      run: kubectl apply -f monitoring/prometheus-role.yaml
+
+    - name: Apply Prometheus rolebinding
+      run: kubectl apply -f monitoring/prometheus-rolebinding.yaml
+
+    - name: Apply Prometheus Service
+      run: kubectl apply -f monitoring/prometheus-service.yaml
+      
+    - name: Apply Grafana ConfigMap
+      run: kubectl apply -f monitoring/grafana-datasource-configmap.yaml
+
+    - name: Apply Grafana Deployment
+      run: kubectl apply -f monitoring/grafana-deployment.yaml
+
+    - name: Apply Grafana Service
+      run: kubectl apply -f monitoring/grafana-service.yaml

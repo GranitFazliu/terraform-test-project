@@ -1,0 +1,23 @@
+name: Fetch Azure Quota Limits
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  fetch-quota-limits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Fetch Azure Quota Limits
+        run: |
+          ACCESS_TOKEN=$(az account get-access-token --query accessToken -o tsv)
+          curl -X GET "https://management.azure.com/subscriptions/${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}/providers/Microsoft.Capacity/resourceProviders/Microsoft.Compute/locations/westeurope/serviceLimits?api-version=2020-10-25" -H "Authorization: Bearer $ACCESS_TOKEN"
+        env:
+          AZURE_HTTP_USER_AGENT: "action/azure-login@v1"
