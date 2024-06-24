@@ -34,7 +34,7 @@ The code is a bit messy when it comes to organization and deployment but it did 
     This one is tricky as it used to worked but then i broke it and didn't have time to fix again so i removed most parts especialy the ones for CPU/MEM monitoring.
     Grafana and Prometheus are deployed on AKS, Grafana has Prometheus as a Source but unfortunantly Promethoes started having issues so i stopped there due to time
     ![Alt text](/images/prometheus-up-time-graph.PNG) 
-    If i had fixed Promethues then it would not have been hard to make 1 dashboard with 1 query.
+    If i had fixed Promethues then it would not have been hard to make 1 dashboard with 1 query on Grafana.
 
 6) By choice, create a simple cronjob, deploy to AKS, ie: print current time.
    https://github.com/GranitFazliu/terraform-test-project/blob/983189a9d6a8c5e80ab0d22fa0881c826a9eeca5/kubernetes/time-cronjob.yaml#L1-L18
